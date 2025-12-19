@@ -24,7 +24,8 @@
     "db:studio": "drizzle-kit studio",
     "db:check": "drizzle-kit check",
     "db:up": "drizzle-kit up",
-    "db:drop": "drizzle-kit drop"
+    "db:drop": "drizzle-kit drop",
+    "db:seed": "ts-node src/db/seeds/admin.seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
