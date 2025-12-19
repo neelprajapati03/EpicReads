@@ -13,6 +13,10 @@ export default (() => ({
     user: process.env.DATABASE_USERNAME ?? '',
     password: process.env.DATABASE_PASSWORD ?? '',
   },
+   jwt: {
+    secret: process.env.JWT_SECRET ?? '',
+    accessTokenExpiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN ?? '1d',
+  },
 
   // Hard-locked environment
   serverEnvironment: 'Development',
@@ -27,6 +31,12 @@ export type ConfigType = {
     port: string;
     user: string;
     password: string;
+
   };
+  jwt: {
+    secret: string;
+    accessTokenExpiresIn: string;
+  };
+  
   serverEnvironment: 'Development';
 };
