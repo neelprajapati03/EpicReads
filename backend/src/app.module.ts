@@ -6,6 +6,7 @@ import configuration from './config/configuration';
 import { ScheduleModule } from '@nestjs/schedule';
 import { DrizzleModule } from './db/drizzle.module';
 import { AuthModule } from './auth/auth.module';
+import { BookModule } from './book/book.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { AuthModule } from './auth/auth.module';
     }),
     ScheduleModule.forRoot(),
     DrizzleModule,
-    AuthModule
+    AuthModule,
+    BookModule,
   ],
   controllers: [AppController],
   providers: [AppService],
