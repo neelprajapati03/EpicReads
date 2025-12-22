@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { desc, eq } from 'drizzle-orm';
 import { DrizzleService } from 'src/db/drizzle.service';
 import { booksTable } from 'src/db/schema';
 import { GetBookDto } from 'src/Dtos/GetBook.dto';
@@ -29,5 +30,22 @@ export class BookService {
       price: created.price,
       imgUrl: created.imgUrl ?? undefined,
     };
+  }
+
+  async getBooks(): Promise<GetBookDto[]> {
+    const books = await this.drizzleservice.db.query.booksTable.findMany({
+      where: eq(booksTable.isDeleted, false),
+      orderBy: [desc(booksTable.createdAt)],
+    });
+
+    return books.map((book) => ({
+      bookId: book.bookId,
+      title: book.title,
+      author: book.author,
+      category: book.category,
+      stock: book.stock,
+      price: book.price,
+      imgUrl: book.imgUrl ?? undefined,
+    }));
   }
 }
