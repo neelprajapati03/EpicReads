@@ -63,6 +63,7 @@ export class AuthService {
     const token = this.jwtservice.sign({
       userId: existingUser.userId,
       email: existingUser.email,
+      userType: existingUser.userType,
     });
 
     return { access_token: token };
@@ -76,6 +77,7 @@ export class AuthService {
         email: true,
         firstName: true,
         lastName: true,
+        userType: true,
       },
     });
 
