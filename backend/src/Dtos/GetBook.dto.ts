@@ -1,8 +1,8 @@
-import { IsOptional, IsString, IsNumber } from "class-validator";
+import { IsOptional, IsString, IsNumber, IsDate } from 'class-validator';
 
 export class GetBookDto {
   @IsString()
-  bookId: string;   // ✅ UUID is string
+  bookId: string; // ✅ UUID is string
 
   @IsString()
   title: string;
@@ -14,7 +14,7 @@ export class GetBookDto {
   category: string;
 
   @IsString()
-  price: string;    // ✅ numeric → string
+  price: string; // ✅ numeric → string
 
   @IsNumber()
   stock: number;

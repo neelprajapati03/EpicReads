@@ -1,5 +1,5 @@
-import { PartialType } from "@nestjs/swagger";
-import { IsOptional, IsString, IsNumber } from "class-validator";
+import { PartialType } from '@nestjs/swagger';
+import { IsOptional, IsString, IsNumber, IsDate } from 'class-validator';
 
 export class CreateBookDto {
   @IsString()
@@ -11,7 +11,7 @@ export class CreateBookDto {
   @IsString()
   category: string;
 
-  @IsString()   // ✅ numeric
+  @IsString() // ✅ numeric
   price: string;
 
   @IsOptional()
@@ -23,4 +23,4 @@ export class CreateBookDto {
   imgUrl?: string;
 }
 
-export class UpdateBookDto extends PartialType(CreateBookDto){}
+export class UpdateBookDto extends PartialType(CreateBookDto) {}
