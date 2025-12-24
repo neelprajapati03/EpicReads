@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { DrizzleModule } from './db/drizzle.module';
 import { AuthModule } from './auth/auth.module';
 import { BookModule } from './book/book.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { BookModule } from './book/book.module';
     DrizzleModule,
     AuthModule,
     BookModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

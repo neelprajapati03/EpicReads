@@ -1,3 +1,5 @@
+import { relations } from 'drizzle-orm';
+import { uniqueIndex } from 'drizzle-orm/pg-core';
 import {
   boolean,
   integer,
@@ -44,6 +46,7 @@ export const userTable = pgTable('users', {
   ...baseDeleteColumns,
 });
 
+//Book  Model
 export const booksTable = pgTable('books', {
   bookId: uuid('book_id').primaryKey().defaultRandom(),
   title: varchar('title', { length: 255 }).notNull(),
@@ -55,3 +58,38 @@ export const booksTable = pgTable('books', {
   ...baseTableColumns,
   ...baseDeleteColumns,
 });
+
+// Cart Model
+
+export const cartTable = pgTable(
+  'cart',
+  {
+    cartId: uuid('cart_id').primaryKey().defaultRandom(),
+    quantity: integer('quantity').notNull().default(1),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => userTable.userId, {
+        onDelete: 'cascade',
+      }),
+    bookId: uuid('book_id')
+      .notNull()
+      .references(() => booksTable.bookId, { onDelete: 'cascade' }),
+
+    ...baseTableColumns,
+    ...baseDeleteColumns,
+  },
+  (table) => [
+    uniqueIndex('cart_user_book_unique').on(table.userId, table.bookId),
+  ],
+);
+
+export const cartTableRealtion = relations(cartTable, ({ one }) => ({
+  user: one(userTable, {
+    fields: [cartTable.userId],
+    references: [userTable.userId],
+  }),
+  book: one(booksTable, {
+    fields: [cartTable.bookId],
+    references: [booksTable.bookId],
+  }),
+}));
