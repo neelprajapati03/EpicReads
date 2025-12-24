@@ -1,5 +1,7 @@
 import {
   boolean,
+  integer,
+  numeric,
   pgEnum,
   pgTable,
   timestamp,
@@ -38,6 +40,18 @@ export const userTable = pgTable('users', {
   email: varchar('email', { length: 255 }).notNull().unique(),
   password: varchar('password').notNull(),
   userType: UserTypeDbEnum('user_type').default('USER').notNull(),
+  ...baseTableColumns,
+  ...baseDeleteColumns,
+});
+
+export const booksTable = pgTable('books', {
+  bookId: uuid('book_id').primaryKey().defaultRandom(),
+  title: varchar('title', { length: 255 }).notNull(),
+  author: varchar('author', { length: 255 }).notNull(),
+  category: varchar('category', { length: 255 }).notNull(),
+  price: numeric('price', { precision: 10, scale: 2 }).notNull(),
+  stock: integer('stock').notNull().default(0),
+  imgUrl: varchar('image_url', { length: 500 }),
   ...baseTableColumns,
   ...baseDeleteColumns,
 });
