@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { DrizzleService } from 'src/db/drizzle.service';
 import * as bcrypt from 'bcrypt';
 import { userTable } from 'src/db/schema';
@@ -81,6 +85,36 @@ export class AuthService {
       },
     });
 
-    return user || null;
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+
+  async getProfile(userId: string) {
+    const user = await this.validateUser(userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    return user;
+  }
+  async getUser(userId: string): Promise<GetUserPayload> {
+    const user = await this.drizzleservice.db.query.userTable.findFirst({
+      where: eq(userTable.userId, userId),
+      columns: {
+        userId: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        userType: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 }
