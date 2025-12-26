@@ -1,12 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DrizzleService } from 'src/db/drizzle.service';
-import { GetUserDto } from 'src/Dtos/GetUser.dto';
-import { RegisterDto } from 'src/Dtos/types/register.dto';
 import * as bcrypt from 'bcrypt';
 import { userTable } from 'src/db/schema';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from 'src/Dtos/types/login.dto';
 import { eq } from 'drizzle-orm';
+import { RegisterPayload } from 'src/validators/auth/register.schema';
+import { GetUserPayload } from 'src/validators/auth/user.schema';
+import { LoginPayload } from 'src/validators/auth/login.schema';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +15,7 @@ export class AuthService {
     private drizzleservice: DrizzleService,
   ) {}
 
-  async register(data: RegisterDto): Promise<GetUserDto> {
+  async register(data: RegisterPayload): Promise<GetUserPayload> {
     // Hash password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
@@ -40,7 +40,7 @@ export class AuthService {
     };
   }
 
-  async login(data: LoginDto): Promise<{ access_token: string }> {
+  async login(data: LoginPayload): Promise<{ access_token: string }> {
     const existingUser = await this.drizzleservice.db.query.userTable.findFirst(
       {
         where: eq(userTable.email, data.email),

@@ -6,13 +6,17 @@ import {
 import { and, desc, eq } from 'drizzle-orm';
 import { DrizzleService } from 'src/db/drizzle.service';
 import { booksTable, cartTable } from 'src/db/schema';
-import { AddToCartDto, UpdateCartDto } from 'src/Dtos/types/Cart.dto';
+
+import {
+  AddToCartPayload,
+  UpdateCartPayload,
+} from 'src/validators/cart/cart.schema';
 
 @Injectable()
 export class CartService {
   constructor(private drizzleservice: DrizzleService) {}
 
-  async addCart(userId: string, data: AddToCartDto) {
+  async addCart(userId: string, data: AddToCartPayload) {
     if (!data.quantity || data.quantity <= 0) {
       throw new BadRequestException('Quantity must be greater than 0');
     }
@@ -142,7 +146,7 @@ export class CartService {
     };
   }
 
-  async updateCart(userId: string, cartId: string, data: UpdateCartDto) {
+  async updateCart(userId: string, cartId: string, data: UpdateCartPayload) {
     if (!data.quantity || data.quantity <= 0) {
       throw new BadRequestException('Quantity must be greater than 0');
     }

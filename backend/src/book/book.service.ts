@@ -1,15 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { and, desc, eq } from 'drizzle-orm';
-import e from 'express';
 import { DrizzleService } from 'src/db/drizzle.service';
 import { booksTable } from 'src/db/schema';
-import { GetBookDto } from 'src/Dtos/GetBook.dto';
-import { CreateBookDto, UpdateBookDto } from 'src/Dtos/types/Book.dto';
+import {
+  CreateBookPayload,
+  UpdateBookPayload,
+} from '../validators/book/book.schema';
+import { GetBookPayload } from 'src/validators/book/getBook.schema';
 
 @Injectable()
 export class BookService {
   constructor(private drizzleservice: DrizzleService) {}
-  async addBook(data: CreateBookDto): Promise<GetBookDto> {
+  async addBook(data: CreateBookPayload): Promise<GetBookPayload> {
     const [created] = await this.drizzleservice.db
       .insert(booksTable)
       .values({
@@ -33,7 +35,7 @@ export class BookService {
     };
   }
 
-  async getBooks(): Promise<GetBookDto[]> {
+  async getBooks(): Promise<GetBookPayload[]> {
     const books = await this.drizzleservice.db.query.booksTable.findMany({
       where: eq(booksTable.isDeleted, false),
       orderBy: [desc(booksTable.createdAt)],
@@ -50,7 +52,7 @@ export class BookService {
     }));
   }
 
-  async getBookByBookId(bookId: string): Promise<GetBookDto> {
+  async getBookByBookId(bookId: string): Promise<GetBookPayload> {
     const exisitng = await this.drizzleservice.db.query.booksTable.findFirst({
       where: eq(booksTable.bookId, bookId),
       columns: {
@@ -81,7 +83,10 @@ export class BookService {
     };
   }
 
-  async updateBook(bookId: string, data: UpdateBookDto): Promise<GetBookDto> {
+  async updateBook(
+    bookId: string,
+    data: UpdateBookPayload,
+  ): Promise<GetBookPayload> {
     const [updated] = await this.drizzleservice.db
       .update(booksTable)
       .set({

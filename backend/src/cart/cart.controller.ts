@@ -10,12 +10,20 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { AddToCartDto, UpdateCartDto } from 'src/Dtos/types/Cart.dto';
 import { JwtAuthGuard } from 'src/auth/guards/JwtAuth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decoraters/roles.decorater';
 import { ApiResponse } from '@nestjs/swagger';
 import type { Request } from 'express';
+import { ZodValidationPipe } from 'src/validators/validation.pipe';
+import type {
+  AddToCartPayload,
+  UpdateCartPayload,
+} from 'src/validators/cart/cart.schema';
+import {
+  AddToCartSchema,
+  UpdateCartSchema,
+} from 'src/validators/cart/cart.schema';
 
 @Controller('cart')
 export class CartController {
@@ -24,8 +32,11 @@ export class CartController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('USER')
   @Post()
-  @ApiResponse({ type: AddToCartDto, status: 200 })
-  addCart(@Req() req: Request, @Body() body: AddToCartDto) {
+  @ApiResponse({ status: 200 })
+  addCart(
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AddToCartSchema)) body: AddToCartPayload,
+  ) {
     const userId = req.user!.userId;
     return this.cartservice.addCart(userId, body);
   }
@@ -51,11 +62,11 @@ export class CartController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('USER')
   @Put(':cartId')
-  @ApiResponse({ type: UpdateCartDto, status: 201 })
+  @ApiResponse({ status: 201 })
   updateCart(
     @Req() req: Request,
     @Param('cartId') cartId: string,
-    @Body() body: UpdateCartDto,
+    @Body(new ZodValidationPipe(UpdateCartSchema)) body: UpdateCartPayload,
   ) {
     const userId = req.user!.userId;
     return this.cartservice.updateCart(userId, cartId, body);
